@@ -1,0 +1,79 @@
+services:
+
+  postgres:
+    image: debezium/postgres:15
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql # init db
+      - ./postgres/pgdata:/var/lib/postgresql/data # bind mount to map if needing to persist data folder
+      - ./postgres/seed/products.csv:/docker-entrypoint-initdb.d/products.csv # seed data
+
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: docker.io/bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - "9093:9093"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=INSIDE://:9092,OUTSIDE://:9093
+      - KAFKA_CFG_LISTENERS=INSIDE://:9092,OUTSIDE://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INSIDE
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+
+  datagen:
+    build:
+      context: ./datagen/
+      dockerfile: ./Dockerfile
+    command: python /opt/datagen/fake_data_gen.py
+    volumes:
+      - ./datagen:/opt/datagen
+    container_name: datagen
+    restart: on-failure
+    depends_on:
+      - kafka
+      - postgres
+
+  dataload:
+    build:
+      context: ./dataload/
+      dockerfile: ./Dockerfile
+    command: python /opt/dataload/consumer.py
+    volumes:
+      - ./dataload:/opt/dataload
+    container_name: dataload
+    restart: on-failure
+    depends_on:
+      - kafka
+      - postgres
+
+  streamlit:
+    build:
+      context: ./streamlit/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8501:8501"
+    command: streamlit run app.py
+    volumes:
+      - ./streamlit:/opt/streamlit
+    container_name: streamlit_dash
+    restart: on-failure
+    depends_on:
+      - postgres
