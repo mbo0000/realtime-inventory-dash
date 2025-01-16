@@ -1,5 +1,12 @@
 # Makefile
 
+# system agnostic 
+ifeq ($(OS), Windows_NT)
+	OPEN_CMD:=start ""
+else
+	OPEN_CMD:=open
+endif
+
 .PHONY: up down viz
 
 up:
@@ -11,4 +18,4 @@ down:
 	rm -rf postgres/pgdata/*
 
 viz:
-	open http://localhost:8501
+	$(OPEN_CMD) "http://localhost:8501"

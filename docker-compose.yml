@@ -66,13 +66,13 @@ services:
 
   streamlit:
     build:
-      context: ./streamlit/
+      context: ./streamlit_dash/
       dockerfile: ./Dockerfile
     ports:
       - "8501:8501"
     command: streamlit run app.py
     volumes:
-      - ./streamlit:/opt/streamlit
+      - ./streamlit_dash:/opt/streamlit_dash
     container_name: streamlit_dash
     restart: on-failure
     depends_on:
