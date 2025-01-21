@@ -2,7 +2,7 @@
 
 # system agnostic 
 ifeq ($(OS), Windows_NT)
-	OPEN_CMD:=start ""
+	OPEN_CMD:=cmd /c start
 else
 	OPEN_CMD:=open
 endif
