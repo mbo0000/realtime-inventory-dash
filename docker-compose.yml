@@ -42,7 +42,7 @@ services:
     build:
       context: ./datagen/
       dockerfile: ./Dockerfile
-    command: python /opt/datagen/fake_data_gen.py
+    command: python /opt/datagen/sale_transaction.py
     volumes:
       - ./datagen:/opt/datagen
     container_name: datagen
@@ -50,30 +50,50 @@ services:
     depends_on:
       - kafka
       - postgres
-
-  dataload:
-    build:
-      context: ./dataload/
-      dockerfile: ./Dockerfile
-    command: python /opt/dataload/consumer.py
-    volumes:
-      - ./dataload:/opt/dataload
-    container_name: dataload
-    restart: on-failure
-    depends_on:
-      - kafka
-      - postgres
-
+      
   streamlit:
     build:
       context: ./streamlit_dash/
       dockerfile: ./Dockerfile
     ports:
       - "8501:8501"
-    command: streamlit run app.py
+    command: streamlit run local.py
     volumes:
       - ./streamlit_dash:/opt/streamlit_dash
     container_name: streamlit_dash
     restart: on-failure
     depends_on:
       - postgres
+
+  jobmanager:
+    container_name: flink_jobmanager
+    build:
+      context: ./flink/
+    ports:
+      - "8081:8081"
+      - "9249:9249"
+    command: jobmanager
+    volumes:
+      - ./flink/code:/opt/flink/code
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager 
+
+  taskmanager:
+    container_name: flink_taskmanager
+    build:
+      context: ./flink/
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    ports:
+      - "9250:9249"
+    volumes:
+      - ./flink/code:/opt/flink/code
+    scale: 1
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2        

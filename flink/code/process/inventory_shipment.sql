@@ -1,0 +1,1 @@
+INSERT INTO inventory_shipment_pg SELECT * FROM inventory_shipment;

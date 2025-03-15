@@ -1,0 +1,1 @@
+INSERT INTO sale_transaction SELECT * FROM transaction;
