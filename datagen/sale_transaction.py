@@ -20,10 +20,10 @@ def _get_pg_conn():
     while attempts > 0:
         try:
             conn = psycopg2.connect(
-                dbname      = "postgres",
-                user        = "postgres",
-                password    = "postgres",
-                host        = "postgres"
+                dbname      = "postgres"
+                , user        = "postgres"
+                , password    = "postgres"
+                , host        = "postgres"
             )
             print('authenticated')
             return conn
@@ -36,9 +36,9 @@ def _get_pg_conn():
 
 def get_products():
     # get product data from pg
-    pg_conn                     = _get_pg_conn()
-    query                       = 'select * from faker_gen.products;'
-    res                         = pd.read_sql(query, pg_conn)
+    pg_conn = _get_pg_conn()
+    query   = 'select * from faker_gen.products;'
+    res     = pd.read_sql(query, pg_conn)
 
     pg_conn.close()
 
@@ -80,7 +80,7 @@ def gen_inventory_shipment(item):
         , 'unit_received' : MAX_UNIT
         , 'dt'            : datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     }
-
+    
     products_info[item_id]['unit_shipment'] += MAX_UNIT
     push_to_kafka(shipment, 'inventory_shipment')
 

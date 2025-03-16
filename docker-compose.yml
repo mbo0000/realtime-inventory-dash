@@ -57,7 +57,7 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "8501:8501"
-    command: streamlit run local.py
+    command: streamlit run app.py
     volumes:
       - ./streamlit_dash:/opt/streamlit_dash
     container_name: streamlit_dash
