@@ -13,30 +13,35 @@ st.set_page_config(
 
 TOPICS = ['sale_info']
 
-@dataclass(frozen=True)
-class KafkaConsumerConfig:
-    servers         = 'kafka:9092'
-    group_id        = 'sale_group_2'
-    offset_reset    = 'latest'
-
 # -----------------------------------------------------------------------------
 
-def get_consumer_config(config):
+def get_consumer_config():
     consumer = Consumer({
-        'bootstrap.servers'     : config.servers
-        , 'group.id'            : config.group_id
-        , 'auto.offset.reset'   : config.offset_reset
+        'bootstrap.servers'     : 'kafka:9092'
+        , 'group.id'            : 'sale_group_2'
+        , 'auto.offset.reset'   : 'latest'
     })
     return consumer
 
+def update_df(event, df):
+
+    mdict       = ast.literal_eval(event)
+    tmp         = {k:[mdict[k]] for k in mdict}
+    cur_item    = pd.DataFrame.from_dict(tmp)
+    
+    if len(df) > 0:
+        df = df[df['prod_id'] != mdict['prod_id']] 
+
+    df = pd.concat([df, cur_item], ignore_index = True)
+    return df
+
 
 def main():
-
-    consumer = get_consumer_config(KafkaConsumerConfig())
+    consumer = get_consumer_config()
     consumer.subscribe(TOPICS)
 
-    df = pd.DataFrame()
-    cont = st.empty()
+    df      = pd.DataFrame()
+    cont    = st.empty()
 
     while True:
         msg = consumer.poll(0.5)  # Poll for messages with 0.5 second timeout
@@ -47,17 +52,9 @@ def main():
         if msg.error():
             print(f"Consumer error: {msg.error()}")
             continue
-        
-        event = msg.value().decode('utf-8')
-
-        mdict = ast.literal_eval(event)
-        tmp = {k:[mdict[k]] for k in mdict}
-        cur_item = pd.DataFrame.from_dict(tmp)
-        
-        if len(df) > 0:
-            df = df[df['prod_id'] != mdict['prod_id']] 
-
-        df = pd.concat([df, cur_item], ignore_index = True)
+    
+        event   = msg.value().decode('utf-8')
+        df      = update_df(event, df)
 
         with cont.container():
 
@@ -108,16 +105,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-# https://blog.streamlit.io/how-to-build-a-real-time-live-dashboard-with-streamlit/
-# https://share.streamlit.io/template-preview/00b8b074-cd51-45f1-90d5-2f9af46686ee
-# https://kafka.apache.org/quickstart#quickstart_send

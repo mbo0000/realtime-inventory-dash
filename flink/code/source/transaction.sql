@@ -8,10 +8,10 @@ create table transaction (
     , dt TIMESTAMP(3)
     , WATERMARK FOR dt AS dt - INTERVAL '15' SECOND
 ) with (
-    'connector' = 'kafka'
-    , 'topic' = 'sale_transaction'
-    , 'properties.bootstrap.servers' = 'kafka:9092'
-    , 'properties.group.id' = 'sale_group_1'
-    , 'scan.startup.mode' = 'earliest-offset'
-    , 'format' = 'json'
+    'connector'                         = 'kafka'
+    , 'topic'                           = 'sale_transaction'
+    , 'properties.bootstrap.servers'    = 'kafka:9092'
+    , 'properties.group.id'             = 'sale_group_1'
+    , 'scan.startup.mode'               = 'earliest-offset'
+    , 'format'                          = 'json'
 )

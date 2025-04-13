@@ -1,0 +1,20 @@
+id,item_name,price,cost_price,reorder_point,description
+2,Bottled Water (500ml),4.0,1.2,100,Carbonated soft drink
+3,Energy Drink (250ml),2.5,1.5,150,High-caffeine energy drink
+4,Coca Cola,2.75,1.8,250,Freshly brewed hot coffee
+6,"Coffee (hot, medium)",2.0,1.0,200,Salted and crispy potato chips
+7,"Coffee (hot, small)",1.5,0.8,250,Chocolate and candy bar
+8,"Coffee (hot, large)",3.2,1.3,180,Healthy and nutritious granola bar
+9,Cookies (pack of 6),2.5,1.5,350,Soft and chewy cookies
+10,Fruit Snack Pack,1.75,1.0,280,Assortment of dried fruits and nuts
+11,Toothpaste,3.5,2.0,150,Minty toothpaste for oral hygiene
+12,Hand Sanitizer (small),2.0,1.2,180,Small sanitizer bottle for on-the-go
+13,Pain Relievers (pack),5.0,3.0,230,Over-the-counter pain relief medication
+14,Bandages (box),3.0,2.0,350,Box of adhesive bandages for minor cuts
+15,Sunscreen (small),5.5,3.5,230,Small bottle of sunscreen for sun protection
+16,"Batteries (AA, pack of 4)",4.0,2.5,230,Pack of 4 AA batteries
+17,"Light Bulbs (LED, 2-pack)",6.0,4.0,220,Energy-efficient LED light bulbs
+18,"Trash Bags (small, 10-pack)",3.0,2.0,150,Small trash bags for everyday use
+19,Paper Towels (single roll),2.5,1.5,150,Single roll of paper towels
+20,Multi-Surface Cleaner,4.53,3.0,330,All-purpose cleaning spray
+21,Lottery Tickets,2.0,1.5,300,Assorted lottery tickets

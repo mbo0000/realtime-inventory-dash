@@ -1,19 +1,19 @@
 services:
 
-  postgres:
-    image: debezium/postgres:15
-    container_name: postgres
-    hostname: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql # init db
-      - ./postgres/pgdata:/var/lib/postgresql/data # bind mount to map if needing to persist data folder
-      - ./postgres/seed/products.csv:/docker-entrypoint-initdb.d/products.csv # seed data
+  # postgres:
+  #   image: debezium/postgres:15
+  #   container_name: postgres
+  #   hostname: postgres
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql # init db
+  #     - ./postgres/pgdata:/var/lib/postgresql/data # bind mount to map if needing to persist data folder
+  #     - ./postgres/seed/products.csv:/docker-entrypoint-initdb.d/products.csv # seed data
 
   zookeeper:
     image: docker.io/bitnami/zookeeper:latest
@@ -49,7 +49,7 @@ services:
     restart: on-failure
     depends_on:
       - kafka
-      - postgres
+      # - postgres
       
   streamlit:
     build:
@@ -63,7 +63,8 @@ services:
     container_name: streamlit_dash
     restart: on-failure
     depends_on:
-      - postgres
+      - kafka
+      # - postgres
 
   jobmanager:
     container_name: flink_jobmanager

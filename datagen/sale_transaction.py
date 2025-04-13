@@ -21,9 +21,9 @@ def _get_pg_conn():
         try:
             conn = psycopg2.connect(
                 dbname      = "postgres"
-                , user        = "postgres"
-                , password    = "postgres"
-                , host        = "postgres"
+                , user      = "postgres"
+                , password  = "postgres"
+                , host      = "postgres"
             )
             print('authenticated')
             return conn
@@ -36,13 +36,15 @@ def _get_pg_conn():
 
 def get_products():
     # get product data from pg
-    pg_conn = _get_pg_conn()
-    query   = 'select * from faker_gen.products;'
-    res     = pd.read_sql(query, pg_conn)
+    # pg_conn = _get_pg_conn()
+    # query   = 'select * from faker_gen.products;'
+    # res     = pd.read_sql(query, pg_conn)
 
-    pg_conn.close()
+    # pg_conn.close()
 
-    return res
+    product                     = pd.read_csv('seed/products.csv')
+    product['max_inventory']    = 0
+    return product
 
 def init_shipment(prod):
     # init shipment info, only once at startup

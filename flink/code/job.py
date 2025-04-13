@@ -26,7 +26,7 @@ def read_sql(dir, file_name):
     with open(file_path, 'r') as file:
         return file.read()
 
-def get_job_config(config):
+def set_stream_config(config):
     # set config and get exec envr
     stream_env = StreamExecutionEnvironment.get_execution_environment()
 
@@ -42,8 +42,8 @@ def get_job_config(config):
     for jar in JARS:
         stream_env.add_jars(jar)
 
-    table_env = StreamTableEnvironment.create(stream_env)
-    job_config = table_env.get_config().get_configuration()
+    table_env   = StreamTableEnvironment.create(stream_env)
+    job_config  = table_env.get_config().get_configuration()
     job_config.set_string("pipeline.name", 'sale_data')
 
     return table_env
@@ -51,23 +51,23 @@ def get_job_config(config):
 def run_job():
     # config
     config      = StreamEnvConfig()
-    table_env   = get_job_config(config) 
+    table_env   = set_stream_config(config) 
 
     # add source
     table_env.execute_sql(read_sql('source', 'transaction.sql'))
     table_env.execute_sql(read_sql('source', 'inventory_shipment.sql'))
 
     # add sink
-    table_env.execute_sql(read_sql('sink', 'sale_transaction.sql'))
-    table_env.execute_sql(read_sql('sink', 'inventory_shipment_pg.sql'))
+    # table_env.execute_sql(read_sql('sink', 'sale_transaction.sql'))
+    # table_env.execute_sql(read_sql('sink', 'inventory_shipment_pg.sql'))
     table_env.execute_sql(read_sql('sink', 'current_inventory.sql'))
 
     # run process query
     st_exec = table_env.create_statement_set()\
-        .add_insert_sql(read_sql('process', 'sale_transaction.sql'))\
-        .add_insert_sql(read_sql('process', 'inventory_shipment.sql'))\
         .add_insert_sql(read_sql('process', 'current_inventory.sql'))\
         .execute()
+        # .add_insert_sql(read_sql('process', 'sale_transaction.sql'))\
+        # .add_insert_sql(read_sql('process', 'inventory_shipment.sql'))\
 
     # print
     table_env.from_path('current_inventory').execute().print()

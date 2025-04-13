@@ -7,9 +7,9 @@ create table current_inventory (
     , unit_left INT
     , PRIMARY KEY (prod_id) NOT ENFORCED
 ) with (
-    'connector' = 'upsert-kafka'
-    , 'topic' = 'sale_info'
-    , 'properties.bootstrap.servers' = 'kafka:9092'
-    , 'key.format' = 'json'
-    , 'value.format' = 'json'
+    'connector'                         = 'upsert-kafka'
+    , 'topic'                           = 'sale_info'
+    , 'properties.bootstrap.servers'    = 'kafka:9092'
+    , 'key.format'                      = 'json'
+    , 'value.format'                    = 'json'
 )

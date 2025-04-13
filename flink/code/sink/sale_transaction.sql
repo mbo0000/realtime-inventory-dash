@@ -7,10 +7,10 @@ create table sale_transaction (
     , regular_unit_price DECIMAL(10,2)
     , dt TIMESTAMP(3)
 ) with (
-    'connector' = 'jdbc'
-    , 'url' = 'jdbc:postgresql://postgres:5432/postgres'
-    , 'table-name' = 'faker_gen.sale_transaction'
-    , 'username' = 'postgres'
-    , 'password' = 'postgres'
-    , 'driver' = 'org.postgresql.Driver'
+    'connector'     = 'jdbc'
+    , 'url'         = 'jdbc:postgresql://postgres:5432/postgres'
+    , 'table-name'  = 'faker_gen.sale_transaction'
+    , 'username'    = 'postgres'
+    , 'password'    = 'postgres'
+    , 'driver'      = 'org.postgresql.Driver'
 )
