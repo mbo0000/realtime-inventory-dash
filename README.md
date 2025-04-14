@@ -7,6 +7,8 @@
 
 This project involves creating an end-to-end streaming data pipeline, from ingestion to visualization. The goal is to develop a near-real-time inventory dashboard for a retail store, enabling employees to monitor daily transactions and inventory levels effectively.
 
+![Diagram](https://github.com/mbo0000/realtime-inventory-dash/blob/main/images/dashboard.png)
+
 ## Objectives
 - generate fake sale data, as source, using a python script
 - produce and consume messages via Kafka
