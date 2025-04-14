@@ -20,7 +20,7 @@ This project involves creating an end-to-end streaming data pipeline, from inges
 - Kafka
 
 ## Design Architecture
-[Diagram]()
+[Diagram](https://github.com/mbo0000/realtime-inventory-dash/blob/main/images/pipeline_architecture.png)
 
 - __Data Source__: [A Python script](https://github.com/mbo0000/realtime-inventory-dash/blob/main/datagen/sale_transaction.py) will generate fake sales transaction data, simulating simplified POS data from store checkouts. Additionally, the script will produce inventory shipment data when stock levels are low. The generated data will be pushed to Kafka topics.
 - __Stream__: Kafka will be used as a messaging broker to stream sales data, inventory shipment, and inventory level data as they are generated at their sources.
