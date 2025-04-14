@@ -20,15 +20,16 @@ This project involves creating an end-to-end streaming data pipeline, from inges
 - Kafka
 
 ## Design Architecture
+[Diagram]()
 
-- __Data Source__: A Python script will generate fake sales transaction data, simulating simplified POS data from store checkouts. Additionally, the script will produce inventory shipment data when stock levels are low. The generated data will be pushed to Kafka topics.
+- __Data Source__: [A Python script](https://github.com/mbo0000/realtime-inventory-dash/blob/main/datagen/sale_transaction.py) will generate fake sales transaction data, simulating simplified POS data from store checkouts. Additionally, the script will produce inventory shipment data when stock levels are low. The generated data will be pushed to Kafka topics.
 - __Stream__: Kafka will be used as a messaging broker to stream sales data, inventory shipment, and inventory level data as they are generated at their sources.
-- __Process__: Stream data from Kafka will be processed to aggregate inventory and shipment data. The aggregated data will then be upserted back into Kafka  
-- __BI Solution__: using Streamlit to provide a realtime inventory monitoring dashboard by subscribing to the inventory level topic.
+- __Process__: Stream data from Kafka will be processed in a [Flink job](https://github.com/mbo0000/realtime-inventory-dash/blob/main/flink/code/job.py) to aggregate inventory and shipment data as [current inventory](https://github.com/mbo0000/realtime-inventory-dash/blob/main/flink/code/process/current_inventory.sql). The aggregated data will then be upserted back into Kafka  
+- __BI Solution__: using Streamlit to provide a realtime inventory [monitoring dashboard](https://github.com/mbo0000/realtime-inventory-dash/blob/main/streamlit_dash/app.py) by subscribing to the inventory level topic.
 
 ### Considerations
 - __Memory__: Keep in mind the available memory size, as aggregated data will be stored in-memory and forwarded to Kafka. If state management is needed, consider using a dedicated database like RocksDB for storing processed data. However, this would increase latency due to disk reads. For this project, state management is not required.
-- __Flink Watermarking__: In real-world applications, stream data often originates from multiple sources and may arrive out of order. Watermarking in the data sources enables Flink to wait for a specified duration to include late-arriving data in processing. In this project, event time is used for watermarking. Processed time should be considered if system-generated timestamps are required instead of event-driven timestamps.
+- __Flink Watermarking__: In real-world applications, stream data often originates from multiple sources and may arrive out of order. Watermarking in the data sources enables Flink to wait for a specified duration to include late-arriving data in processing. In this project, event time is used for watermarking in [sale transaction](https://github.com/mbo0000/realtime-inventory-dash/blob/main/flink/code/source/transaction.sql) and [inventory shipment](https://github.com/mbo0000/realtime-inventory-dash/blob/main/flink/code/source/inventory_shipment.sql) sources. Processed time should be considered if system-generated timestamps are required instead of event-driven timestamps.
 
 
 ## How to run project
